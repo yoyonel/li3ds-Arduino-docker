@@ -1,0 +1,48 @@
+version: '2'
+
+services:
+
+  # definition du ROS Master
+  master:
+    container_name: ros_master
+    build: 
+        context: ros/.
+        args:
+            - http_proxy
+            - https_proxy
+            - no_proxy
+    command: 
+        # Lancement du ROS Core => lance un ROS Master (s'il n'existe pas déjà)
+        - roscore
+
+  # Definition du ROS Node pour l'Arduino
+  arduino:
+    container_name: rosnode_arduino
+
+    build:
+        context: arduino/.
+        args:
+            - http_proxy
+            - https_proxy
+            - no_proxy
+
+    # transmission au node de la connection série par USB
+    # TODO: faudrait le passer en paramètre (argument de commande)
+    devices:
+        - "/dev/ttyACM0:/dev/ttyACM0"
+
+    # Dépendance en terme de noeuds ROS (faudrait rajouter 'rosserial')
+    depends_on:
+        - "master"
+
+    environment:
+        - "ROS_HOSTNAME=arduino"
+        - "ROS_MASTER_URI=http://master:11311"
+
+    volumes:
+        - ./arduino/li3ds-Arduino:/root/li3ds-Arduino
+    
+    #stdin_open: true
+    #tty: true
+    command: rosrun rosserial_python serial_node.py /dev/ttyACM0 _baud:=115200
+    #command: /bin/bash
