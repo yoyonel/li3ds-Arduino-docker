@@ -1,0 +1,3 @@
+[submodule "li3ds-Arduino"]
+	path = li3ds-Arduino
+	url = git@github.com:yoyonel/li3ds-Arduino.git
