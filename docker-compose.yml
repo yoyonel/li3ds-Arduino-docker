@@ -11,6 +11,8 @@ services:
             - http_proxy
             - https_proxy
             - no_proxy
+    # tag image
+    image: 172.20.250.99:5000/li3ds/ros/rosnode_master
     command: 
         # Lancement du ROS Core => lance un ROS Master (s'il n'existe pas déjà)
         - roscore
@@ -25,6 +27,9 @@ services:
             - http_proxy
             - https_proxy
             - no_proxy
+
+    # tag image
+    image: 172.20.250.99:5000/li3ds/rosnode_arduino
 
     # transmission au node de la connection série par USB
     # TODO: faudrait le passer en paramètre (argument de commande)

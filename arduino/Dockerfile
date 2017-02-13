@@ -1,4 +1,5 @@
-FROM ros/rosserial:indigo 
+#FROM ros/rosserial:indigo 
+FROM 172.20.0.215:5000/li3ds/ros/rosserial:indigo
 
 MAINTAINER Lionel ATTY <lionel.atty@ign.fr>
 
