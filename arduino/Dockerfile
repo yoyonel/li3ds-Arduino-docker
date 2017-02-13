@@ -1,5 +1,5 @@
 #FROM ros/rosserial:indigo 
-FROM 172.20.0.215:5000/li3ds/ros/rosserial:indigo
+FROM 172.20.250.99:5000/li3ds/rosserial:indigo
 
 MAINTAINER Lionel ATTY <lionel.atty@ign.fr>
 
@@ -15,6 +15,7 @@ RUN apt-get install -y \
         && apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
+RUN git config --global http.proxy http://proxy.ign.fr:3128
 RUN git clone https://github.com/yoyonel/arduino-cmake.git /root/arduino-cmake
 
 #COPY ./apt.conf /etc/apt/apt.conf
