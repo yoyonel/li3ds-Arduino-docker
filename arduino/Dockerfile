@@ -11,9 +11,17 @@ RUN apt-get install -y \
         cmake \
         build-essential g++ \
         vim \
+        zsh \
+        tmux \
+        colord \
         arduino \
         && apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
+
+# Install Zsh
+RUN git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh \
+      && cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc \
+      && chsh -s /bin/zsh
 
 RUN git config --global http.proxy http://proxy.ign.fr:3128
 RUN git clone https://github.com/yoyonel/arduino-cmake.git /root/arduino-cmake
@@ -26,7 +34,10 @@ RUN git clone https://github.com/yoyonel/arduino-cmake.git /root/arduino-cmake
 
 ENV ARDUINOCMAKE_DIR /root/arduino-cmake
 
-CMD ["/bin/bash"]
+#CMD ["/bin/bash"]
+CMD ["/bin/zsh"]
+
+#ENTRYPOINT ["source", "/opt/ros/indigo/setup.zsh"]
 
 WORKDIR /root/
 

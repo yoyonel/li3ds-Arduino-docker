@@ -13,4 +13,4 @@ docker run -it \
     -v $CUR_PATH/arduino/li3ds-Arduino:/root/li3ds-Arduino \
     --device=/dev/ttyACM0:/dev/ttyACM0 \
     $1 \
-    /bin/bash
+    /bin/zsh
