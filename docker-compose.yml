@@ -1,53 +1,88 @@
 version: '2'
 
 services:
+    # definition du ROS Master
+    ros_master:
+        container_name: rosnode_master
+        
+        # tag image
+        image: 172.20.250.99:5000/ros/ros:indigo-ros-base
 
-  # definition du ROS Master
-  master:
-    container_name: ros_master
-    build: 
-        context: ros/.
-        args:
-            - http_proxy
-            - https_proxy
-            - no_proxy
-    # tag image
-    image: 172.20.250.99:5000/li3ds/ros/rosnode_master
-    command: 
-        # Lancement du ROS Core => lance un ROS Master (s'il n'existe pas déjà)
-        - roscore
+        command: 
+            # Lancement du ROS Core => lance un ROS Master (s'il n'existe pas déjà)
+            - roscore
 
-  # Definition du ROS Node pour l'Arduino
-  arduino:
-    container_name: rosnode_arduino
+    # Definition du ROS Node pour l'Arduino
+    ros_arduino:
+      container_name: rosnode_arduino
 
-    build:
-        context: arduino/.
-        args:
-            - http_proxy
-            - https_proxy
-            - no_proxy
+      # Build de l'image ... a voir si on laisse dans le docker-compose
+      build:
+          context: arduino/latest/.
+          args:
+              - http_proxy
+              - https_proxy
+              - no_proxy
 
-    # tag image
-    image: 172.20.250.99:5000/li3ds/rosnode_arduino
+      # tag image
+      image: 172.20.250.99:5000/li3ds/arduino:latest
 
-    # transmission au node de la connection série par USB
-    # TODO: faudrait le passer en paramètre (argument de commande)
-    devices:
-        - "/dev/ttyACM0:/dev/ttyACM0"
+      # transmission au node de la connection série par USB
+      # TODO: faudrait le passer en paramètre (argument de commande)
+      devices:
+          - "/dev/ttyACM0:/dev/ttyACM0"
 
-    # Dépendance en terme de noeuds ROS (faudrait rajouter 'rosserial')
-    depends_on:
-        - "master"
+      # Dépendance en terme de noeuds ROS (faudrait rajouter 'rosserial')
+      depends_on:
+          - "ros_master"
 
-    environment:
-        - "ROS_HOSTNAME=arduino"
-        - "ROS_MASTER_URI=http://master:11311"
+      environment:
+          - "ROS_HOSTNAME=ros_arduino"
+          - "ROS_MASTER_URI=http://ros_master:11311"
 
-    volumes:
-        - ./arduino/li3ds-Arduino:/root/li3ds-Arduino
-    
-    #stdin_open: true
-    #tty: true
-    command: rosrun rosserial_python serial_node.py /dev/ttyACM0 _baud:=115200
-    #command: /bin/bash
+      #volumes:
+      #    - ./arduino/li3ds-Arduino:/root/li3ds-Arduino
+     
+      # Option for terminal 
+      #stdin_open: true
+      #tty: true
+      
+      command: rosrun rosserial_python serial_node.py /dev/ttyACM0 _baud:=115200
+
+    # Definition du ROS Node pour l'Arduino
+    ros_arduino_dev:
+      container_name: rosnode_arduino_dev
+
+      # Build de l'image ... a voir si on laisse dans le docker-compose
+      #build:
+      #    context: arduino/latest/.
+      #    args:
+      #        - http_proxy
+      #        - https_proxy
+      #        - no_proxy
+
+      # tag image
+      image: 172.20.250.99:5000/li3ds/arduino:latest
+
+      # transmission au node de la connection série par USB
+      # TODO: faudrait le passer en paramètre (argument de commande)
+      devices:
+          - "/dev/ttyACM0:/dev/ttyACM0"
+
+      # Dépendance en terme de noeuds ROS (faudrait rajouter 'rosserial')
+      depends_on:
+          - "ros_master"
+          - "ros_arduino"
+
+      environment:
+          - "ROS_HOSTNAME=ros_arduino_dev"
+          - "ROS_MASTER_URI=http://ros_master:11311"
+
+      volumes:
+          - ./arduino/li3ds-Arduino:/root/li3ds-Arduino
+     
+      # Option for terminal 
+      stdin_open: true
+      tty: true
+      
+      #command: /bin/zsh 
