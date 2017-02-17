@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+
+  # Definition du ROS Node pour l'Arduino
+  arduino_dev:
+    container_name: rosnode_arduino_dev
+
+    build:
+        context: arduino/.
+        args:
+            - http_proxy
+            - https_proxy
+            - no_proxy
+
+    # tag image
+    image: 172.20.250.99:5000/li3ds/rosnode_arduino
+
+    # transmission au node de la connection série par USB
+    # TODO: faudrait le passer en paramètre (argument de commande)
+    devices:
+        - "/dev/ttyACM0:/dev/ttyACM0"
+
+    # Dépendance en terme de noeuds ROS (faudrait rajouter 'rosserial')
+    #  depends_on:
+    #      - "master"
+    #      - "arduino"
+
+    environment:
+      - "ROS_HOSTNAME=arduino_dev"
+      - "ROS_MASTER_URI=http://master:11311"
+
+    volumes:
+        - ./arduino/li3ds-Arduino:/root/li3ds-Arduino
+    
+    stdin_open: true
+    tty: true
+    
+    command: /bin/zsh

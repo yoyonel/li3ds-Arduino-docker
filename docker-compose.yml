@@ -4,6 +4,7 @@ services:
 
   # definition du ROS Master
   master:
+    #network_mode: "none"
     container_name: ros_master
     build: 
         context: ros/.
@@ -11,6 +12,10 @@ services:
             - http_proxy
             - https_proxy
             - no_proxy
+
+              #ports:
+              #        - "11311:11311"
+
     # tag image
     image: 172.20.250.99:5000/li3ds/ros/rosnode_master
     command: 
@@ -19,6 +24,7 @@ services:
 
   # Definition du ROS Node pour l'Arduino
   arduino:
+    #network_mode: "service:master"
     container_name: rosnode_arduino
 
     build:
@@ -51,3 +57,5 @@ services:
     #tty: true
     command: rosrun rosserial_python serial_node.py /dev/ttyACM0 _baud:=115200
     #command: /bin/bash
+
+
