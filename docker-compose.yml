@@ -1,6 +1,12 @@
 version: '2'
 
 services:
+    # definition du ROS Master
+    ros_master:
+        container_name: rosnode_master
+        
+        # tag image
+        image: 172.20.250.99:5000/ros/ros:indigo-ros-base
 
   # definition du ROS Master
   master:
@@ -57,5 +63,3 @@ services:
     #tty: true
     command: rosrun rosserial_python serial_node.py /dev/ttyACM0 _baud:=115200
     #command: /bin/bash
-
-

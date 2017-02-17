@@ -1,3 +1,6 @@
 [submodule "arduino/li3ds-Arduino"]
-	path = arduino/li3ds-Arduino
+	path = arduino/latest/li3ds-Arduino
 	url = git@github.com:yoyonel/li3ds-Arduino.git
+[submodule "docker-rosserial"]
+	path = rosserial
+	url = git@github.com:yoyonel/docker-rosserial.git
